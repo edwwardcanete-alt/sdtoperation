@@ -1585,7 +1585,7 @@ function renderWorkers(){
       '<td style="padding:8px 9px">'+badge('info',w.dept)+'</td>'+
       '<td style="padding:8px 9px;font-family:var(--mono);font-weight:600">'+total.toLocaleString()+'</td>'+
       '<td style="padding:8px 9px;color:var(--text3);font-size:11px">'+fmtDate(w.ts)+'</td>'+
-      '<td style="padding:8px 9px"><button class="btn btn-d btn-sm" onclick="deleteRecord('workers',''+w.id+'')">Remove</button></td>'+
+      '<td style="padding:8px 9px"><button class="btn btn-d btn-sm" onclick="deleteRecord(\'workers\', \''+w.id+'\')">Remove</button></td>'+
     '</tr>';
   }).join('');
   
