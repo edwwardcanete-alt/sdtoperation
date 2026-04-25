@@ -1595,7 +1595,7 @@ function renderWorkers(){
 async function cleanBrokenWorkers(){
   if(!confirm('Delete all corrupted worker records (those with no name or department)?')) return;
   var data = load('workers');
-  var broken = data.filter(function(w){ return !w.name || !w.dept; });
+  var broken = data.filter(function(w){ return !w || (!w.name && !w.dept); });
   var sb = getSB();
   if(!sb) return;
   showLoading(true);
