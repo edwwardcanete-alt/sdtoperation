@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>SDT System — Steadfast CLO.</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--accent:#2563eb;--accent2:#1d4ed8;--text:#1a1d23;--text2:#6b7280;--text3:#9ca3af;--border:#e5e9f0;--red:#ef4444;--font:'IBM Plex Sans',sans-serif;}
+body{font-family:var(--font);background:linear-gradient(135deg,#eff6ff 0%,#f0f9ff 50%,#f5f3ff 100%);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.login-wrap{width:100%;max-width:420px}
+.logo-area{text-align:center;margin-bottom:32px}
+.logo-icon{width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,#2563eb,#3b82f6);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;color:#fff;margin:0 auto 12px;box-shadow:0 8px 24px rgba(37,99,235,.3)}
+.logo-name{font-size:24px;font-weight:700;color:var(--text)}
+.logo-sub{font-size:13px;color:var(--text2);margin-top:4px}
+.card{background:#fff;border-radius:20px;padding:32px;box-shadow:0 4px 24px rgba(0,0,0,.08);border:1px solid var(--border)}
+.card-title{font-size:20px;font-weight:700;color:var(--text);margin-bottom:6px}
+.card-sub{font-size:13px;color:var(--text2);margin-bottom:28px}
+.fg{margin-bottom:16px}
+.fg label{display:block;font-size:12px;font-weight:600;color:var(--text2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.04em}
+.fi{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:var(--font);color:var(--text);background:#fff;transition:all .15s;outline:none}
+.fi:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+.fi::placeholder{color:var(--text3)}
+.pw-wrap{position:relative}
+.pw-toggle{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text3);font-size:16px;padding:4px}
+.btn-login{width:100%;padding:13px;background:linear-gradient(135deg,#2563eb,#3b82f6);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all .15s;box-shadow:0 4px 12px rgba(37,99,235,.3);margin-top:8px}
+.btn-login:hover{background:linear-gradient(135deg,#1d4ed8,#2563eb);transform:translateY(-1px)}
+.btn-login:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.error-msg{background:#fef2f2;border:1px solid rgba(239,68,68,.2);border-radius:8px;padding:10px 14px;font-size:13px;color:#dc2626;margin-bottom:16px;display:none;align-items:center;gap:8px}
+.error-msg.show{display:flex}
+.forgot-link{text-align:center;margin-top:16px;font-size:13px;color:var(--text2)}
+.forgot-link a{color:var(--accent);text-decoration:none;font-weight:500}
+.footer{text-align:center;margin-top:24px;font-size:12px;color:var(--text3)}
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="login-wrap">
+  <div class="logo-area">
+    <div style="margin:0 auto 14px;width:160px;height:56px;background:linear-gradient(135deg,#0f0f0f,#1a1a1a);border-radius:14px;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(0,0,0,.25);padding:10px 16px">
+      <div style="display:flex;align-items:baseline;gap:0">
+        <span style="font-family:Arial Black,sans-serif;font-weight:900;font-size:20px;color:#fff;letter-spacing:-1px">STEAD</span>
+        <span style="font-family:Arial Black,sans-serif;font-weight:900;font-size:20px;color:#f5c518;letter-spacing:-1px">FAST</span>
+      </div>
+    </div>
+    <div style="font-size:10px;color:#9ca3af;letter-spacing:.12em;font-weight:600;margin-bottom:2px">CLO. ⚡</div>
+    <div class="logo-name" style="font-size:20px;font-weight:800;letter-spacing:-.3px">SDT System</div>
+    <div class="logo-sub">Operations & Finance Management</div>
+  </div>
+  <div class="card">
+    <div class="card-title">Welcome back 👋</div>
+    <div class="card-sub">Sign in to access your workspace</div>
+    <div class="error-msg" id="err"><span>⚠</span><span id="err-text">Error</span></div>
+    <div class="fg">
+      <label>Email address</label>
+      <input class="fi" type="email" id="email" placeholder="you@company.com" autocomplete="email">
+    </div>
+    <div class="fg">
+      <label>Password</label>
+      <div class="pw-wrap">
+        <input class="fi" type="password" id="password" placeholder="••••••••" autocomplete="current-password">
+        <button class="pw-toggle" onclick="togglePw()" type="button" id="pw-eye">👁</button>
+      </div>
+    </div>
+    <button class="btn-login" id="login-btn" onclick="doLogin()">Sign in to SDT System</button>
+    <div class="forgot-link"><a href="#" onclick="doForgot();return false;">Forgot your password?</a></div>
+  </div>
+  <div class="footer">Steadfast CLO. ⚡ — SDT System<br>© 2026 Steadfast CLO. All rights reserved.</div>
+</div>
+
+<script>
+// ── CONFIG ──────────────────────────────────────────────
+var SURL = 'https://jcugtlrwjpeuzwpakfsn.supabase.co';
+var SKEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpjdWd0bHJ3anBldXp3cGFrZnNuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwMTQ3NTQsImV4cCI6MjA5MjU5MDc1NH0.dOC9KJYxkI_sN_ueVM6ibZNi-suzfHkTZwmtbPjGHYE';
+
+// ── LOAD SUPABASE ───────────────────────────────────────
+var _sb = null;
+function loadSB(cb){
+  if(_sb){cb();return;}
+  var s=document.createElement('script');
+  s.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/dist/umd/supabase.js';
+  s.onload=function(){
+    _sb=window.supabase.createClient(SURL,SKEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'prodops-auth'}});
+    console.log('Supabase ready');
+    cb();
+  };
+  s.onerror=function(){
+    // Try fallback CDN
+    var s2=document.createElement('script');
+    s2.src='https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js';
+    s2.onload=function(){
+      _sb=window.supabase.createClient(SURL,SKEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'prodops-auth'}});
+      cb();
+    };
+    s2.onerror=function(){ showErr('Failed to load authentication library. Check your internet connection.'); };
+    document.head.appendChild(s2);
+  };
+  document.head.appendChild(s);
+}
+
+// ── INIT ────────────────────────────────────────────────
+loadSB(function(){
+  // Supabase is ready. Do not auto-redirect here; this prevents login/index redirect loops.
+});
+
+// Focus and enter key
+window.addEventListener('load',function(){
+  setTimeout(function(){document.getElementById('email').focus();},100);
+  document.getElementById('password').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
+  document.getElementById('email').addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('password').focus();});
+});
+
+// ── HELPERS ─────────────────────────────────────────────
+function showErr(msg){
+  document.getElementById('err-text').textContent=msg;
+  document.getElementById('err').classList.add('show');
+}
+function hideErr(){document.getElementById('err').classList.remove('show');}
+function togglePw(){
+  var f=document.getElementById('password'),e=document.getElementById('pw-eye');
+  f.type=f.type==='password'?'text':'password';
+  e.textContent=f.type==='password'?'👁':'🙈';
+}
+
+// ── LOGIN ───────────────────────────────────────────────
+async function doLogin(){
+  hideErr();
+  var email=document.getElementById('email').value.trim();
+  var pw=document.getElementById('password').value;
+  if(!email||!pw){showErr('Please enter your email and password.');return;}
+  if(!_sb){loadSB(function(){doLogin();});return;}
+  
+  var btn=document.getElementById('login-btn');
+  btn.disabled=true;
+  btn.innerHTML='<span class="spinner"></span>Signing in...';
+  
+  try{
+    var res=await _sb.auth.signInWithPassword({email:email,password:pw});
+    if(res.error){
+      var msg=res.error.message;
+      if(msg.includes('Invalid login credentials')) msg='Wrong email or password. Please try again.';
+      if(msg.includes('Email not confirmed')) msg='Please confirm your email address first. Check your inbox.';
+      showErr(msg);
+      btn.disabled=false;
+      btn.textContent='Sign in to SDT System';
+      return;
+    }
+    // Success!
+    btn.innerHTML='<span class="spinner"></span>Loading your workspace...';
+    setTimeout(function(){window.location.replace('./index.html');},500);
+  }catch(e){
+    showErr('Connection error: '+e.message);
+    btn.disabled=false;
+    btn.textContent='Sign in to SDT System';
+  }
+}
+
+// ── FORGOT PASSWORD ──────────────────────────────────────
+async function doForgot(){
+  var email=document.getElementById('email').value.trim();
+  if(!email){showErr('Enter your email address first, then click Forgot password.');return;}
+  if(!_sb){showErr('Still connecting... try again in a moment.');return;}
+  var res=await _sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+'/login.html'});
+  if(res.error){showErr(res.error.message);}
+  else{hideErr();alert('Password reset email sent to '+email+'. Check your inbox.');}
+}
+</script>
+</body>
+</html>
