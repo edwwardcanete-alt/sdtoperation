@@ -704,12 +704,26 @@ function renderWorkers(){
 }
 
 async function cleanBrokenWorkers(){
-  if(!confirm('Delete all corrupted worker records?')) return;
+  if(!confirm('Delete all '+load('workers').filter(function(w){return !(w.name||w.workerName)||!(w.dept||w.department);}).length+' corrupted worker records? This cannot be undone.')) return;
   var data = load('workers');
   var broken = data.filter(function(w){ return !(w.name||w.workerName) || !(w.dept||w.department); });
+  if(!broken.length){ showToast('No corrupted records found.'); return; }
   showLoading(true);
-  for(var i=0; i<broken.length; i++){
-    await sbDelete('workers', broken[i].id);
+  showToast('Deleting '+broken.length+' records... please wait.');
+  var sb = getSB();
+  if(sb){
+    // Delete all broken workers at once using IN clause via multiple requests
+    var ids = broken.map(function(w){ return w.id; });
+    // Supabase JS v2: use .in() filter
+    try {
+      var res = await sb.from('workers').delete().in('id', ids);
+      if(res.error) throw res.error;
+    } catch(e) {
+      // Fallback: delete one by one
+      for(var i=0; i<broken.length; i++){
+        await sbDelete('workers', broken[i].id);
+      }
+    }
   }
   showLoading(false);
   await dbReload();
@@ -945,8 +959,19 @@ function buildForm(type){
 
   if(type==='workers') return `
     <div class="fgrid">
-      <div class="fg"><label>Full name <span class="req">*</span></label><input class="fi" type="text" id="f-name" placeholder="Worker full name"></div>
-      <div class="fg"><label>Department <span class="req">*</span></label><select class="fi" id="f-dept"><option>Printing</option><option>Pressing</option><option>Cutting</option><option>Inventory</option><option>Encoding</option><option>Admin</option></select></div>
+      <div class="fg"><label>Full name <span class="req">*</span></label><input class="fi" type="text" id="f-name" placeholder="Worker full name" autocomplete="off"></div>
+      <div class="fg"><label>Department <span class="req">*</span></label>
+        <select class="fi" id="f-dept">
+          <option value="">— Select department —</option>
+          <option>Printing</option>
+          <option>Press</option>
+          <option>Pressing</option>
+          <option>Cutting</option>
+          <option>Inventory</option>
+          <option>Encoding</option>
+          <option>Admin</option>
+        </select>
+      </div>
     </div>
     <div class="fa"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-p" onclick="submitForm('workers')">Save worker</button></div>`;
 

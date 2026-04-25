@@ -928,6 +928,8 @@ var currentUser = null;
 var currentRole = 'viewer';
 
 function canAccess(panel){
+  // If role not loaded yet, allow access (will be re-checked after login)
+  if(!currentRole) return true;
   var perms = ROLE_PERMISSIONS[currentRole] || {};
   return perms.all === true || perms[panel] === true;
 }
@@ -1585,7 +1587,7 @@ function renderWorkers(){
       '<td style="padding:8px 9px">'+badge('info',w.dept)+'</td>'+
       '<td style="padding:8px 9px;font-family:var(--mono);font-weight:600">'+total.toLocaleString()+'</td>'+
       '<td style="padding:8px 9px;color:var(--text3);font-size:11px">'+fmtDate(w.ts)+'</td>'+
-      '<td style="padding:8px 9px"><button class="btn btn-d btn-sm" onclick="deleteRecord(\'workers\', \''+w.id+'\')">Remove</button></td>'+
+      '<td style="padding:8px 9px"><button class="btn btn-d btn-sm" onclick="deleteRecord('workers',''+w.id+'')">Remove</button></td>'+
     '</tr>';
   }).join('');
   
@@ -1595,7 +1597,7 @@ function renderWorkers(){
 async function cleanBrokenWorkers(){
   if(!confirm('Delete all corrupted worker records (those with no name or department)?')) return;
   var data = load('workers');
-  var broken = data.filter(function(w){ return !w || (!w.name && !w.dept); });
+  var broken = data.filter(function(w){ return !w.name || !w.dept; });
   var sb = getSB();
   if(!sb) return;
   showLoading(true);
@@ -1721,7 +1723,7 @@ function switchTab(el,id){
 // ═══════════════════════════════════════════════════════
 function openModal(type){
   // Form types are different from panel types - don't block form types
-  var panelTypes=['printing','presslog','pressing','cutting','receiving','fabric','batches','payments','workers'];
+  var panelTypes=['printing','presslog','pressing','cutting','receiving','fabric','batches','payments'];
   if(panelTypes.indexOf(type)!==-1 && !canAccess(type)){
     showToast('Access denied: your role cannot add records here.','err');
     return;
