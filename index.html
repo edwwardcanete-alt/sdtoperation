@@ -1189,8 +1189,8 @@ function nav(id, el){
   document.getElementById('ptitle').innerHTML=(TITLES[id]||id)+' <span class="live-dot"></span>';
   curPanel=id;
   // User management panel - admin only
-  if(id==='usermgmt'){ renderUserMgmt(); return; }
-  if(id==='printinv'){ renderPrintInv(); return; }
+  if(id==='usermgmt'){ renderUserMgmt(); }
+  if(id==='printinv'){ renderPrintInv(); }
   // Always reload fresh from Supabase on every navigation
   showLoading(true);
   dbReload().then(function(){
