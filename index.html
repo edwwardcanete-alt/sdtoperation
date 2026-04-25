@@ -1559,7 +1559,7 @@ function renderWorkers(){
   
   // Separate valid from broken workers
   var valid = data.filter(function(w){ return w.name && w.dept; });
-  var broken = data.filter(function(w){ return !w.name || !w.dept; });
+  var broken = data.filter(function(w){ return !w || (!w.name && !w.dept); });
   
   var filtered = valid.filter(function(w){ return !fd || w.dept===fd; });
   var tbody=document.getElementById('tbl-workers');
@@ -1596,7 +1596,7 @@ function renderWorkers(){
 
 async function cleanBrokenWorkers(){
   if(!confirm('Delete all corrupted worker records (those with no name or department)?')) return;
-  var data = load('workers');
+  var data = [];
   var broken = data.filter(function(w){ return !w.name || !w.dept; });
   var sb = getSB();
   if(!sb) return;
