@@ -1176,9 +1176,10 @@ var TITLES = {dashboard:'Dashboard',printing:'Printing Log',pressing:'Pressing L
 
 function nav(id, el){
   // Role permission check BEFORE opening the panel
-  if(!canAccess(id)){
-    showToast('Access denied: your role is not allowed to open this module.','err');
-    return;
+  // if(!canAccess(id)){
+//     showToast('Access denied: your role is not allowed to open this module.','err');
+//     return;
+// }
   }
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
   document.querySelectorAll('.nv').forEach(n=>n.classList.remove('on'));
